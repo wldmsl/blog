@@ -45,11 +45,9 @@ export async function Image({
           const arrayBuffer = await response.arrayBuffer();
           imageBuffer = Buffer.from(arrayBuffer);
         } else {
-          imageBuffer = await readFile(
-            new URL(
-              join(import.meta.url, "..", "..", "..", "..", "public", src)
-            ).pathname
-          );
+            imageBuffer = await readFile(
+              join(process.cwd(), "public", src)
+            );
         }
       }
       const computedSize = sizeOf(imageBuffer);
