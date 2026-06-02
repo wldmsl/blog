@@ -13,7 +13,7 @@ export function Logo() {
           href="/"
           className="hover:bg-neutral-200 dark:hover:bg-neutral-700 p-2 rounded-2xl -ml-2 transition-[background-color]"
         >
-          Guillermo Rauch
+          jin's velog
         </Link>
       )}
     </span>

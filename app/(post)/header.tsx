@@ -54,7 +54,7 @@ export function Header({ posts }: { posts: Post[] }) {
            * In practice this is not an issue because we revalidate the entire page over time
            * and because we will move this to a server component with template.tsx at some point */}
           <span suppressHydrationWarning={true}>
-            {post.date} ({ago(post.date, true)} ago)
+            {post.date}
           </span>
         </span>
 
