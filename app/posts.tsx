@@ -58,10 +58,6 @@ function List({ posts }) {
                       {post.title}
                     </span>
                   </span>
-
-                  <span className="text-neutral-500 dark:text-neutral-500 text-xs mt-0.5">
-                    {post.viewsFormatted}
-                  </span>
                 </span>
               </span>
             </Link>

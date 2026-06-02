@@ -35,10 +35,6 @@ export function Header({ posts }: { posts: Post[] }) {
 
       <p className="font-mono flex text-xs text-neutral-500 dark:text-neutral-500">
         <span className="flex-grow">
-          <span className="hidden md:inline">
-            <span className="mx-2">|</span>
-          </span>
-
           {/* since we will pre-render the relative time, over time it
            * will diverge with what the user relative time is, so we suppress the warning.
            * In practice this is not an issue because we revalidate the entire page over time
