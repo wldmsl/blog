@@ -47,10 +47,9 @@ export async function GET(_req: Request, props) {
       >
         <header tw="flex text-[36px] w-full">
           <div style={font("Geist Medium")}>
-            Guillermo Rauch
+            ojen velog
           </div>
           <div tw="grow" />
-          <div tw="text-[28px]">rauchg.com</div>
         </header>
 
         <main tw="flex grow pb-3 flex-col items-center justify-center">

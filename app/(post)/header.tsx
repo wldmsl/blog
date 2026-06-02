@@ -36,16 +36,6 @@ export function Header({ posts }: { posts: Post[] }) {
       <p className="font-mono flex text-xs text-neutral-500 dark:text-neutral-500">
         <span className="flex-grow">
           <span className="hidden md:inline">
-            <span>
-              <a
-                href="https://twitter.com/rauchg"
-                className="hover:text-neutral-800 dark:hover:text-neutral-400"
-                target="_blank"
-              >
-                @rauchg
-              </a>
-            </span>
-
             <span className="mx-2">|</span>
           </span>
 
@@ -56,14 +46,6 @@ export function Header({ posts }: { posts: Post[] }) {
           <span suppressHydrationWarning={true}>
             {post.date}
           </span>
-        </span>
-
-        <span className="pr-1.5">
-          <Views
-            id={post.id}
-            mutate={mutate}
-            defaultValue={post.viewsFormatted}
-          />
         </span>
       </p>
     </>

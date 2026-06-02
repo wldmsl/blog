@@ -1,4 +1,3 @@
-import "./globals.css";
 
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "./analytics";
@@ -26,15 +25,9 @@ export const metadata = {
     description:
       "Guillermo Rauch is the CEO and founder of Vercel, a software engineer, and the creator of Next.js, Mongoose, Socket.io and other open source libraries.",
     url: "https://rauchg.com",
-    siteName: "Guillermo Rauchg's blog",
+    siteName: "ojen velog",
     images: ["/opengraph-image"],
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@rauchg",
-    creator: "@rauchg",
-  },
-  metadataBase: new URL("https://rauchg.com"),
+  }
 };
 
 export const viewport = {
