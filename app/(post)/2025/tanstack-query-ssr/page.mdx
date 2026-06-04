@@ -1,0 +1,118 @@
+export const metadata = {
+  title: 'TanStack Query SSR 세팅 삽질기',
+  description: 'Next.js App Router에서 TanStack Query prefetch 세팅이 생각보다 까다로웠다.',
+}
+
+TanStack Query (React Query v5)를 Next.js App Router에서 쓰려는데 SSR 세팅이 생각보다 복잡했다.
+
+원하는 것: 서버에서 데이터 미리 받아오고, 클라이언트에서 hydration 후 캐시 활용
+
+---
+
+**기본 세팅**
+
+```tsx
+// app/providers.tsx
+'use client'
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useState } from 'react'
+
+export function QueryProvider({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000,
+      },
+    },
+  }))
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  )
+}
+```
+
+```tsx
+// app/layout.tsx
+import { QueryProvider } from './providers'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+여기까진 했는데 서버에서 prefetch를 어떻게 하나가 문제였음.
+
+---
+
+**Prefetch 패턴 (HydrationBoundary)**
+
+```tsx
+// app/posts/page.tsx (서버 컴포넌트)
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import Posts from './posts'
+
+export default async function PostsPage() {
+  const queryClient = new QueryClient()
+  
+  await queryClient.prefetchQuery({
+    queryKey: ['posts'],
+    queryFn: getPosts,
+  })
+  
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Posts />
+    </HydrationBoundary>
+  )
+}
+```
+
+```tsx
+// app/posts/posts.tsx (클라이언트 컴포넌트)
+'use client'
+import { useQuery } from '@tanstack/react-query'
+
+export default function Posts() {
+  const { data } = useQuery({
+    queryKey: ['posts'],
+    queryFn: getPosts,
+  })
+  
+  return <div>{data?.map(post => <div key={post.id}>{post.title}</div>)}</div>
+}
+```
+
+---
+
+**막혔던 것**
+
+`queryClient`를 서버 컴포넌트 바깥에서 만들면 요청 간 캐시가 공유되는 문제 있음. 반드시 요청마다 새 인스턴스 만들어야 함.
+
+```ts
+// 이렇게 하면 안 됨 - 모든 요청이 같은 캐시 공유
+const queryClient = new QueryClient()  // 모듈 레벨에서 선언
+
+// 이렇게 해야 함 - 서버 컴포넌트 안에서 선언
+export default async function Page() {
+  const queryClient = new QueryClient()  // 요청마다 새로 생성
+  ...
+}
+```
+
+---
+
+`staleTime` 설정도 중요함. 클라이언트의 `QueryProvider`에서 `staleTime`을 0으로 두면 서버에서 prefetch해도 클라이언트에서 마운트되자마자 refetch 해버림. prefetch한 데이터를 재사용하려면 적절한 `staleTime` 설정 필요.
+
+v5에서 `initialData` 방식 대신 `HydrationBoundary` 방식을 권장하는데, 이게 더 깔끔하고 캐싱도 잘 됨.
+
+공식 문서가 잘 나와 있긴 한데 읽기 귀찮아서 삽질함. 문서 먼저 읽을걸.

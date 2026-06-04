@@ -1,0 +1,100 @@
+export const metadata = {
+  title: 'LLM context window 한계 맞닥뜨림',
+  description: '긴 문서 요약하려다가 context 초과 에러 맞고 설계를 다시 했다.',
+}
+
+긴 PDF 문서를 AI로 요약하는 기능 만들다가 context window 한계에 부딪혔다.
+
+```
+Error: This model's maximum context length is 128000 tokens.
+However, your messages resulted in 147823 tokens.
+```
+
+128k 토큰이면 충분할 줄 알았는데 200페이지짜리 문서 넣으니까 터졌음.
+
+---
+
+**토큰이 얼마나 되나 미리 확인했어야 했음**
+
+```ts
+import { encoding_for_model } from 'tiktoken'
+
+function countTokens(text: string, model = 'gpt-4o'): number {
+  const enc = encoding_for_model(model)
+  const tokens = enc.encode(text)
+  enc.free()
+  return tokens.length
+}
+
+const tokens = countTokens(documentText)
+console.log(`${tokens} 토큰`)  // API 호출 전에 확인
+```
+
+---
+
+**해결책 1: 청킹 + Map-Reduce 패턴**
+
+문서를 청크로 나눠서 각각 요약하고, 요약들을 다시 요약하는 방식.
+
+```ts
+async function summarizeLargeDocument(text: string): Promise<string> {
+  const CHUNK_SIZE = 30000  // 토큰 기준, 대략 텍스트 120000자
+  const chunks = splitIntoChunks(text, CHUNK_SIZE)
+  
+  // Map: 각 청크 요약
+  const summaries = await Promise.all(
+    chunks.map(chunk => summarize(chunk))
+  )
+  
+  // Reduce: 요약들을 다시 요약
+  const combinedSummary = summaries.join('\n\n---\n\n')
+  
+  if (countTokens(combinedSummary) > 100000) {
+    // 재귀적으로 처리
+    return summarizeLargeDocument(combinedSummary)
+  }
+  
+  return summarize(combinedSummary)
+}
+```
+
+---
+
+**해결책 2: RAG 방식**
+
+"전체 요약" 대신 "질문에 필요한 부분만 찾아서 답"
+
+```ts
+async function answerFromDocument(question: string, documentText: string) {
+  // 1. 문서를 청크로 나눠서 임베딩
+  const chunks = splitIntoChunks(documentText, 1000)
+  const embeddings = await embedChunks(chunks)
+  
+  // 2. 질문과 관련된 청크 찾기
+  const questionEmbedding = await embed(question)
+  const relevantChunks = findTopK(embeddings, questionEmbedding, k=5)
+  
+  // 3. 관련 청크만 컨텍스트로 사용
+  const context = relevantChunks.join('\n')
+  
+  return await ask(`다음 내용을 참고해서 답해줘:\n${context}\n\n질문: ${question}`)
+}
+```
+
+이게 훨씬 효율적임. 질문에 관련 없는 내용까지 다 보낼 필요 없으니까 토큰도 아끼고 답변 품질도 올라감.
+
+---
+
+**컨텍스트를 어떻게 관리하느냐가 핵심**
+
+멀티턴 챗봇 만들 때도 같은 문제 생김. 대화가 길어지면 이전 메시지 다 넣으면 컨텍스트 초과.
+
+- **슬라이딩 윈도우**: 최근 N개 메시지만 유지
+- **대화 요약**: 이전 대화를 압축해서 저장
+- **중요 메시지 선별**: semantic 검색으로 현재 질문과 관련된 과거 메시지만 포함
+
+슬라이딩 윈도우가 구현이 제일 간단하고, 요약 방식은 정보 손실이 생길 수 있음.
+
+---
+
+context window가 점점 커지고 있지만 (Claude는 200k, Gemini는 100만+), 그렇다고 무작정 다 때려넣는 게 최선은 아님. 관련 있는 내용만 잘 추려서 넣는 게 속도도 빠르고 비용도 아끼고 품질도 나음.

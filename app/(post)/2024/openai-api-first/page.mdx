@@ -1,0 +1,94 @@
+export const metadata = {
+  title: 'OpenAI API 처음 써본 날',
+  description: '생각보다 간단한데 삽질 포인트도 있었다.',
+}
+
+드디어 OpenAI API 써봤다. 생각보다 간단한데 처음이라 몇 가지 헤맸음.
+
+일단 가장 기본적인 거:
+
+```ts
+import OpenAI from 'openai'
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
+
+const response = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [
+    { role: 'user', content: '안녕하세요' }
+  ],
+})
+
+console.log(response.choices[0].message.content)
+```
+
+이거 자체는 금방 됐는데 문제는 다른 데 있었음.
+
+---
+
+**삽질 1: API 키를 클라이언트에서 쓰면 안 됨**
+
+처음에 React 컴포넌트에서 바로 `fetch`로 OpenAI API 때렸는데, 당연히 API 키가 클라이언트 번들에 노출됨.
+
+브라우저 네트워크 탭 열면 Authorization 헤더에 API 키가 그대로 보임.
+
+해결: Next.js API Route나 Route Handler를 프록시로 써서 서버에서만 OpenAI 호출.
+
+```ts
+// app/api/chat/route.ts
+export async function POST(req: Request) {
+  const { message } = await req.json()
+  
+  const response = await client.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [{ role: 'user', content: message }],
+  })
+  
+  return Response.json({ 
+    content: response.choices[0].message.content 
+  })
+}
+```
+
+---
+
+**삽질 2: 스트리밍 처음엔 이해가 안 됐음**
+
+GPT처럼 글자가 하나씩 나오는 효과 구현하려면 스트리밍을 써야 하는데, 처음엔 그냥 응답 기다렸다가 한 번에 보여줬음.
+
+스트리밍 쓰면:
+
+```ts
+const stream = await client.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [{ role: 'user', content: message }],
+  stream: true,
+})
+
+for await (const chunk of stream) {
+  const content = chunk.choices[0]?.delta?.content || ''
+  process.stdout.write(content)
+}
+```
+
+클라이언트에서 받을 때는 `ReadableStream` 써야 해서 좀 더 복잡함. 이건 나중에 따로 정리.
+
+---
+
+**삽질 3: rate limit**
+
+무료 플랜이라 rate limit이 빡세게 걸려있었음. 테스트하다 보면 금방 `429 Too Many Requests` 남.
+
+```
+RateLimitError: 429 You exceeded your current quota
+```
+
+개발할 때는 응답 캐싱 해두거나, mock 응답 써서 API 호출 최소화하는 게 좋음.
+
+---
+
+토큰 개념도 처음엔 헷갈렸는데, 대략 영어 1단어 ≈ 1토큰, 한국어는 1글자가 1-2토큰 정도라고 보면 됨. 프롬프트가 길면 길수록 비용이 올라감.
+
+일단 기초는 이 정도. 다음엔 system prompt 잘 짜는 거 공부해야겠다.

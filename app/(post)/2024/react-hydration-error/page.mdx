@@ -1,0 +1,62 @@
+export const metadata = {
+  title: 'React hydration 에러 삽질기',
+  description: 'SSR 환경에서 hydration 에러가 터졌는데 원인 찾는데 한참 걸렸다.',
+}
+
+오늘도 멀쩡히 돌아가던 코드가 갑자기 이 에러를 뱉기 시작했다.
+
+```
+Error: Hydration failed because the initial UI does not match what was rendered on the server.
+```
+
+????? 뭔 소리야 나 코드 바꾼 거 없는데.
+
+---
+
+처음엔 진짜 뭔지 몰라서 그냥 `suppressHydrationWarning` 때려박았다. 근데 그건 진짜 임시방편이고 원인을 못 찾으면 나중에 더 이상해진다는 걸 알고 있으면서도 일단 에러나 없애자 싶었음.
+
+콘솔 보니까 문제가 되는 부분은 날짜를 렌더링하는 컴포넌트였다.
+
+```tsx
+// 이게 문제였음
+export function PostDate({ date }: { date: string }) {
+  return <span>{new Date(date).toLocaleDateString()}</span>
+}
+```
+
+서버에서 렌더링할 때랑 클라이언트에서 hydration할 때 `toLocaleDateString()`이 다른 locale로 동작하는 거였다.
+
+서버는 `en-US`, 내 브라우저는 `ko-KR` 이라 결과값이 달라서 mismatch 발생.
+
+---
+
+해결은 간단했다.
+
+```tsx
+export function PostDate({ date }: { date: string }) {
+  return (
+    <span>
+      {new Date(date).toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })}
+    </span>
+  )
+}
+```
+
+locale 명시해주니까 서버/클라이언트 동일하게 렌더링됨.
+
+아니면 `useEffect` 안에서만 날짜 포맷팅하는 방법도 있는데, 그러면 초기 렌더링 때 날짜가 잠깐 비어있어서 별로임.
+
+---
+
+근데 더 근본적인 문제가 있었음. `Date`나 `Math.random()`, `window` 같은 거 SSR에서 그냥 쓰면 무조건 hydration mismatch 뜬다.
+
+서버에선 특정 시간에 실행되고 클라이언트에선 또 다른 시간에 실행되니까. 당연한 건데 매번 까먹음.
+
+앞으로 기억할 것:
+- locale 의존 함수는 명시적으로 locale 지정
+- 서버/클라이언트에서 다를 수 있는 값은 `useEffect`에서 처리
+- `suppressHydrationWarning`은 진짜 어쩔 수 없을 때만

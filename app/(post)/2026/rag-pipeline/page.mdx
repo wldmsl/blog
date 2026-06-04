@@ -1,0 +1,129 @@
+export const metadata = {
+  title: 'RAG 파이프라인 기초 구현',
+  description: '내 문서를 AI에게 학습시키는 게 아니라 참고시키는 거였다.',
+}
+
+"AI한테 우리 회사 문서 학습시키고 싶어요"라는 요구사항이 있었는데, 이게 Fine-tuning이 아니라 RAG로 해결하는 게 맞는 경우였음.
+
+두 개 차이:
+- **Fine-tuning**: 모델 자체를 추가 학습 → 비싸고 느리고, 문서 바뀌면 다시 학습
+- **RAG**: 질문에 맞는 문서 찾아서 컨텍스트로 넣어주기 → 저렴하고 문서 업데이트 쉬움
+
+---
+
+**RAG 파이프라인 전체 흐름**
+
+```
+1. 문서 준비 → 2. 청킹 → 3. 임베딩 → 4. 벡터 DB 저장
+                                                    ↓
+7. 최종 답변 ← 6. LLM 호출 ← 5. 유사 청크 검색
+```
+
+---
+
+**구현 (간단 버전)**
+
+```ts
+import OpenAI from 'openai'
+
+const openai = new OpenAI()
+
+// === 인덱싱 단계 (미리 실행) ===
+
+function chunkDocument(text: string, chunkSize = 1000): string[] {
+  const sentences = text.split(/(?<=[.!?])\s+/)
+  const chunks: string[] = []
+  let current = ''
+  
+  for (const sentence of sentences) {
+    if ((current + sentence).length > chunkSize && current) {
+      chunks.push(current.trim())
+      current = sentence
+    } else {
+      current += ' ' + sentence
+    }
+  }
+  if (current) chunks.push(current.trim())
+  
+  return chunks
+}
+
+async function indexDocuments(documents: string[]) {
+  const allChunks: { text: string; vector: number[] }[] = []
+  
+  for (const doc of documents) {
+    const chunks = chunkDocument(doc)
+    
+    for (const chunk of chunks) {
+      const response = await openai.embeddings.create({
+        model: 'text-embedding-3-small',
+        input: chunk,
+      })
+      allChunks.push({
+        text: chunk,
+        vector: response.data[0].embedding,
+      })
+    }
+  }
+  
+  return allChunks  // 실제로는 DB에 저장
+}
+
+// === 쿼리 단계 ===
+
+async function query(question: string, index: typeof allChunks) {
+  // 1. 질문 임베딩
+  const queryEmbedding = await openai.embeddings.create({
+    model: 'text-embedding-3-small',
+    input: question,
+  })
+  const queryVector = queryEmbedding.data[0].embedding
+  
+  // 2. 유사도 높은 청크 찾기
+  const scored = index.map(chunk => ({
+    text: chunk.text,
+    score: cosineSimilarity(queryVector, chunk.vector),
+  }))
+  const topChunks = scored
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(c => c.text)
+  
+  // 3. 컨텍스트와 함께 LLM에 질문
+  const context = topChunks.join('\n\n')
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+      {
+        role: 'system',
+        content: '주어진 문서 내용을 바탕으로 질문에 답하세요. 문서에 없는 내용은 "문서에 없는 내용입니다"라고 답하세요.',
+      },
+      {
+        role: 'user',
+        content: `문서:\n${context}\n\n질문: ${question}`,
+      },
+    ],
+  })
+  
+  return response.choices[0].message.content
+}
+```
+
+---
+
+**품질 올리는 포인트들**
+
+청크 크기가 중요함. 너무 작으면 문맥이 없고, 너무 크면 관련 없는 내용이 섞임. 보통 500~1500 토큰 정도가 좋다고 하는데 문서마다 다름.
+
+overlap 추가:
+```ts
+// 청크 경계에서 문맥이 잘리는 걸 방지
+const chunks = chunkWithOverlap(text, { size: 1000, overlap: 200 })
+```
+
+Hybrid search (키워드 + 시맨틱):
+BM25 같은 키워드 검색과 벡터 검색을 합치면 더 정확함. 고유명사나 코드 같은 건 시맨틱 검색이 잘 못 찾음.
+
+---
+
+LangChain이나 LlamaIndex 쓰면 이 파이프라인 코드 많이 줄어드는데, 직접 구현해보니까 각 단계가 뭘 하는지 이해됨. 처음엔 직접 해보는 게 나은 것 같음.

@@ -1,0 +1,66 @@
+export const metadata = {
+  title: 'Zustand 스토어 초기화 안 되던 문제',
+  description: '페이지 이동해도 상태가 유지되는 게 문제였는데 의도한 게 아니었다.',
+}
+
+Zustand 쓰면서 생긴 버그인데, 사용자가 로그아웃하고 다시 로그인하면 이전 상태가 그대로 남아있는 문제가 있었다.
+
+예를 들어 A 유저로 로그인해서 장바구니에 뭔가 담고, 로그아웃 후 B 유저로 로그인하면 A 유저 장바구니가 그대로 보이는 거임.
+
+```ts
+const useCartStore = create<CartStore>((set) => ({
+  items: [],
+  addItem: (item) => set((state) => ({ items: [...state.items, item] })),
+  removeItem: (id) => set((state) => ({ items: state.items.filter(i => i.id !== id) })),
+}))
+```
+
+---
+
+Zustand는 기본적으로 모듈 레벨에서 스토어를 생성하기 때문에 페이지 이동해도 메모리에 남아있음. SPA니까 당연한 거긴 한데 몰랐음.
+
+로그아웃 처리할 때 스토어를 리셋해야 하는데 처음엔 어떻게 하는지 몰랐다.
+
+방법 1: reset 액션 직접 만들기
+
+```ts
+const initialState = {
+  items: [],
+}
+
+const useCartStore = create<CartStore>((set) => ({
+  ...initialState,
+  addItem: (item) => set((state) => ({ items: [...state.items, item] })),
+  reset: () => set(initialState),
+}))
+```
+
+로그아웃 할 때 `useCartStore.getState().reset()` 호출.
+
+---
+
+방법 2: 여러 스토어 한 번에 리셋하고 싶을 때
+
+스토어가 많아지면 하나하나 reset 호출하기 번거로워서 이런 패턴 씀:
+
+```ts
+const storeResetFns = new Set<() => void>()
+
+const createStore = (initializer) => {
+  const store = create(initializer)
+  const initialState = store.getState()
+  storeResetFns.add(() => store.setState(initialState, true))
+  return store
+}
+
+// 로그아웃 시
+export const resetAllStores = () => storeResetFns.forEach(fn => fn())
+```
+
+---
+
+근데 SSR 환경에서는 또 다른 문제가 있음. Next.js App Router에서 Zustand 쓸 때 서버 컴포넌트에서는 스토어에 접근 못 하고, 여러 요청 간 상태가 공유될 수 있어서 `createStore` 패턴 써야 함.
+
+이건 나중에 따로 정리해야겠다.
+
+일단 오늘의 교훈: **Zustand 스토어는 메모리에 계속 살아있다. 로그아웃이나 세션 초기화 시 명시적으로 reset 해줄 것.**

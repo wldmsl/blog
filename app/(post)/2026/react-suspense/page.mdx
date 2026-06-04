@@ -1,0 +1,120 @@
+export const metadata = {
+  title: 'React Suspense 로딩 UI 구현',
+  description: 'Suspense가 어떻게 동작하는지 이해하는 데 시간이 걸렸다.',
+}
+
+로딩 상태를 컴포넌트마다 `if (isLoading) return <Spinner />`로 처리하고 있었는데, Suspense로 바꿔봤다.
+
+개념은 간단한데 실제로 쓰려면 데이터 페칭 라이브러리가 Suspense를 지원해야 한다는 게 핵심이었음.
+
+---
+
+**기본 사용법**
+
+```tsx
+import { Suspense } from 'react'
+
+export default function Page() {
+  return (
+    <div>
+      <h1>내 페이지</h1>
+      <Suspense fallback={<div>로딩 중...</div>}>
+        <SlowComponent />
+      </Suspense>
+    </div>
+  )
+}
+```
+
+`SlowComponent`가 데이터 로딩 중이면 `fallback`이 보이고, 완료되면 컴포넌트가 나타남.
+
+---
+
+**근데 아무 컴포넌트나 된다는 게 아니었음**
+
+```tsx
+// 이렇게 하면 Suspense 안 걸림
+function SlowComponent() {
+  const [data, setData] = useState(null)
+  
+  useEffect(() => {
+    fetch('/api/data').then(r => r.json()).then(setData)
+  }, [])
+  
+  if (!data) return null  // Suspense가 이 컴포넌트를 suspend 상태로 인식 못 함
+  return <div>{data.title}</div>
+}
+```
+
+Suspense가 동작하려면 컴포넌트가 "Promise를 throw"해야 함. `useEffect`로 데이터 페칭하면 Suspense랑 연결이 안 됨.
+
+---
+
+**TanStack Query로 Suspense 쓰기**
+
+```tsx
+// suspense: true 옵션 추가
+function SlowComponent() {
+  const { data } = useSuspenseQuery({
+    queryKey: ['data'],
+    queryFn: () => fetch('/api/data').then(r => r.json()),
+  })
+  
+  // data는 항상 있음 (로딩 중엔 Suspense가 처리)
+  return <div>{data.title}</div>
+}
+```
+
+`useSuspenseQuery`를 쓰면 로딩 중에 자동으로 throw해서 Suspense가 캐치함.
+
+---
+
+**Next.js App Router에서 서버 컴포넌트 + Suspense**
+
+```tsx
+// app/posts/page.tsx
+import { Suspense } from 'react'
+import PostList from './post-list'
+import PostListSkeleton from './post-list-skeleton'
+
+export default function PostsPage() {
+  return (
+    <div>
+      <h1>포스트</h1>
+      <Suspense fallback={<PostListSkeleton />}>
+        <PostList />  {/* 서버 컴포넌트, async */}
+      </Suspense>
+    </div>
+  )
+}
+```
+
+```tsx
+// app/posts/post-list.tsx (서버 컴포넌트)
+export default async function PostList() {
+  const posts = await getPosts()  // 느린 DB 쿼리
+  return <ul>{posts.map(p => <li key={p.id}>{p.title}</li>)}</ul>
+}
+```
+
+서버 컴포넌트에서 async/await 쓰면 Suspense가 자동으로 동작함. 이게 제일 깔끔함.
+
+---
+
+**여러 Suspense 중첩**
+
+```tsx
+<Suspense fallback={<PageSkeleton />}>
+  <Header />
+  <Suspense fallback={<ContentSkeleton />}>
+    <Content />
+  </Suspense>
+  <Suspense fallback={<SidebarSkeleton />}>
+    <Sidebar />
+  </Suspense>
+</Suspense>
+```
+
+각 영역이 독립적으로 로딩되어서 Header 먼저 보이고, Content, Sidebar 각자 로딩 완료되는 순서대로 나타남.
+
+이게 UX 면에서 훨씬 낫다. 전체 페이지가 다 로딩될 때까지 기다리는 것보다.

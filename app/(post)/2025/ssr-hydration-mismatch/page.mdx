@@ -1,0 +1,82 @@
+export const metadata = {
+  title: 'SSR hydration mismatch 원인 찾기',
+  description: 'Math.random() 하나 때문에 hydration이 깨졌다.',
+}
+
+또 hydration 에러다. 이번엔 날짜 문제가 아니었음.
+
+```
+Warning: Prop `id` did not match. Server: "item-0.4823..." Client: "item-0.9173..."
+```
+
+아 `Math.random()`으로 ID 만들고 있었음.
+
+```tsx
+// 이게 문제
+function ListItem({ label }: { label: string }) {
+  const id = `item-${Math.random()}`  // 서버랑 클라이언트가 다른 값 생성
+  return <li id={id}>{label}</li>
+}
+```
+
+서버에서 렌더링할 때 `Math.random()` 한 번, 클라이언트에서 hydration할 때 또 `Math.random()` 한 번 → 값이 달라서 mismatch.
+
+---
+
+해결법 여러 가지인데:
+
+**1. `useId` 훅 (React 18+)**
+
+```tsx
+import { useId } from 'react'
+
+function ListItem({ label }: { label: string }) {
+  const id = useId()  // 서버/클라이언트 동일한 값 생성
+  return <li id={id}>{label}</li>
+}
+```
+
+`useId`는 React가 내부적으로 컴포넌트 트리 위치 기반으로 ID를 생성하기 때문에 서버/클라이언트 동일함. 이게 가장 깔끔한 해결책.
+
+**2. props로 ID 받기**
+
+```tsx
+// 부모에서 안정적인 ID 전달
+function ListItem({ id, label }: { id: string; label: string }) {
+  return <li id={id}>{label}</li>
+}
+
+// 데이터 ID나 인덱스 사용
+{items.map((item, index) => (
+  <ListItem key={item.id} id={`item-${item.id}`} label={item.label} />
+))}
+```
+
+**3. 클라이언트에서만 ID 필요하면 useEffect**
+
+```tsx
+function ListItem({ label }: { label: string }) {
+  const [id, setId] = useState<string>('')
+  
+  useEffect(() => {
+    setId(`item-${crypto.randomUUID()}`)
+  }, [])
+  
+  return <li id={id}>{label}</li>
+}
+```
+
+근데 이러면 hydration 후 리렌더링 생기니까 성능상 별로임.
+
+---
+
+SSR에서 "서버와 클라이언트에서 다를 수 있는 값"은:
+- `Math.random()`
+- `Date.now()` / `new Date()`
+- `crypto.randomUUID()`
+- `window` / `document` 접근
+- 사용자 환경 의존 값 (locale, timezone 등)
+
+이런 거 쓸 때마다 한 번씩 생각해봐야 함.
+
+`useId`는 왜 이제 알았지. 진작 쓸걸.

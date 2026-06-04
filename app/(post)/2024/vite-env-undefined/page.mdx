@@ -1,0 +1,67 @@
+export const metadata = {
+  title: 'Vite 환경변수 undefined 됐던 이유',
+  description: 'VITE_ 접두사 안 붙이면 클라이언트에서 못 읽는다는 걸 몰랐다.',
+}
+
+Vite로 새 프로젝트 세팅하면서 환경변수 쓰려고 `.env` 만들었는데 계속 `undefined`가 나왔다.
+
+```
+API_URL=https://api.example.com
+```
+
+```tsx
+console.log(import.meta.env.API_URL)  // undefined???
+```
+
+CRA 쓸 때는 `REACT_APP_` 붙이면 됐는데 Vite는 다른가?
+
+---
+
+아 맞다 Vite는 **`VITE_`** 접두사를 써야 클라이언트에 노출된다.
+
+```
+VITE_API_URL=https://api.example.com
+```
+
+```tsx
+console.log(import.meta.env.VITE_API_URL)  // 이제 잘 나옴
+```
+
+이유가 있는데, 접두사 없는 환경변수는 서버사이드(Node 프로세스)용이고 클라이언트 번들에 포함시키면 보안 이슈가 생길 수 있어서 Vite가 의도적으로 막아놓은 거임.
+
+근데 실수로 DB 비밀번호 같은 거 `VITE_DB_PASSWORD`로 하면 클라이언트 번들에 평문으로 들어가니까 조심해야 함. 예전에 팀원 코드 PR 보다가 이런 거 발견한 적 있음.
+
+---
+
+TypeScript 쓰면 타입도 선언해줘야 함:
+
+```ts
+// vite-env.d.ts
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_API_URL: string
+  readonly VITE_APP_TITLE: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+```
+
+이거 안 하면 `import.meta.env.VITE_API_URL`에서 타입 에러 남.
+
+---
+
+`.env` 파일 종류도 헷갈렸음:
+
+```
+.env                # 항상 로드
+.env.local          # 항상 로드, git 무시됨
+.env.development    # npm run dev 할 때만
+.env.production     # npm run build 할 때만
+```
+
+근데 `.env.local`은 `.gitignore`에 자동으로 포함되니까 비밀 값은 여기다 넣으면 됨.
+
+CRA 습관이 아직도 남아있어서 자꾸 `REACT_APP_` 쓰다가 고침.

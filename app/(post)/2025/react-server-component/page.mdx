@@ -1,0 +1,96 @@
+export const metadata = {
+  title: 'React Server Component 이해하기',
+  description: '개념은 알겠는데 실제로 어떻게 쓰는 건지 감이 안 왔다.',
+}
+
+React Server Component(RSC)를 쓰고 있다고 생각했는데 사실 제대로 이해하고 있지 않았다는 걸 나중에 알았음.
+
+처음에 이해한 것: "서버에서 실행되는 컴포넌트"
+실제로: "서버에서만 실행되고 클라이언트 번들에 포함 안 되는 컴포넌트"
+
+이 차이가 의외로 크다.
+
+---
+
+**클라이언트 번들에 안 들어간다는 게 왜 중요하냐면**
+
+무거운 라이브러리를 서버 컴포넌트에서만 쓰면 클라이언트에 번들 안 보내도 됨.
+
+```tsx
+// 서버 컴포넌트
+import { marked } from 'marked'  // 100KB짜리 라이브러리
+import { Prism } from 'prismjs'  // 150KB짜리 라이브러리
+
+export default async function BlogPost({ slug }: { slug: string }) {
+  const post = await getPost(slug)
+  const html = marked(post.content)  // 서버에서 처리
+  
+  return <div dangerouslySetInnerHTML={{ __html: html }} />
+}
+```
+
+이러면 `marked`, `prismjs` 클라이언트로 안 감. 번들 사이즈 크게 줄어듦.
+
+---
+
+**서버 컴포넌트에서 못 쓰는 것들**
+
+- `useState`, `useReducer` 등 훅
+- `useEffect`
+- 이벤트 핸들러 (`onClick`, `onChange` 등)
+- 브라우저 API (`window`, `document`, `localStorage`)
+
+이게 필요하면 `'use client'` 붙인 클라이언트 컴포넌트로 분리해야 함.
+
+---
+
+**처음에 헷갈렸던 것: 서버 컴포넌트가 클라이언트 컴포넌트를 import 할 수 있나?**
+
+```tsx
+// 서버 컴포넌트
+import LikeButton from './LikeButton'  // 클라이언트 컴포넌트
+
+export default async function BlogPost() {
+  const post = await getPost()
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <p>{post.content}</p>
+      <LikeButton postId={post.id} />  {/* 이게 가능함 */}
+    </article>
+  )
+}
+```
+
+가능함. 반대로 클라이언트 컴포넌트에서 서버 컴포넌트 import는 안 됨 (children으로 전달하는 건 됨).
+
+---
+
+**데이터 패칭이 깔끔해짐**
+
+```tsx
+// 각 컴포넌트가 자기 데이터 직접 가져옴
+async function UserProfile({ userId }: { userId: string }) {
+  const user = await db.user.findUnique({ where: { id: userId } })
+  return <div>{user.name}</div>
+}
+
+async function UserPosts({ userId }: { userId: string }) {
+  const posts = await db.post.findMany({ where: { authorId: userId } })
+  return <ul>{posts.map(p => <li key={p.id}>{p.title}</li>)}</ul>
+}
+
+// 부모에서 props 전달 안 해도 됨
+export default async function UserPage({ params }: { params: { id: string } }) {
+  return (
+    <div>
+      <UserProfile userId={params.id} />
+      <UserPosts userId={params.id} />
+    </div>
+  )
+}
+```
+
+이게 처음엔 "DB 쿼리가 두 번 나가는 거 아냐?" 싶었는데 React가 중복 요청 dedup 해줌 (같은 요청은 캐싱).
+
+멘탈 모델 바꾸는 데 시간이 걸렸는데 이제는 이 방식이 훨씬 직관적으로 느껴짐.
