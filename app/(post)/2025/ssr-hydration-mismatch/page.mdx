@@ -3,13 +3,13 @@ export const metadata = {
   description: 'Math.random() 하나 때문에 hydration이 깨졌다.',
 }
 
-또 hydration 에러다. 이번엔 날짜 문제가 아니었음.
+또 hydration 에러다. 이번엔 날짜 문제가 아니었다.
 
 ```
 Warning: Prop `id` did not match. Server: "item-0.4823..." Client: "item-0.9173..."
 ```
 
-아 `Math.random()`으로 ID 만들고 있었음.
+아 `Math.random()`으로 ID 만들고 있었다.
 
 ```tsx
 // 이게 문제
@@ -36,7 +36,7 @@ function ListItem({ label }: { label: string }) {
 }
 ```
 
-`useId`는 React가 내부적으로 컴포넌트 트리 위치 기반으로 ID를 생성하기 때문에 서버/클라이언트 동일함. 이게 가장 깔끔한 해결책.
+`useId`는 React가 내부적으로 컴포넌트 트리 위치 기반으로 ID를 생성하기 때문에 서버/클라이언트가 동일하다. 이게 가장 깔끔한 해결책.
 
 **2. props로 ID 받기**
 
@@ -66,7 +66,7 @@ function ListItem({ label }: { label: string }) {
 }
 ```
 
-근데 이러면 hydration 후 리렌더링 생기니까 성능상 별로임.
+근데 이러면 hydration 후 리렌더링이 생기니까 성능상 별로다.
 
 ---
 
@@ -77,6 +77,6 @@ SSR에서 "서버와 클라이언트에서 다를 수 있는 값"은:
 - `window` / `document` 접근
 - 사용자 환경 의존 값 (locale, timezone 등)
 
-이런 거 쓸 때마다 한 번씩 생각해봐야 함.
+이런 거 쓸 때마다 한 번씩 생각해봐야 한다.
 
 `useId`는 왜 이제 알았지. 진작 쓸걸.

@@ -3,7 +3,7 @@ export const metadata = {
   description: 'AI 응답을 실시간으로 보여주는 스트리밍 구현하면서 헤맸던 것들.',
 }
 
-GPT처럼 글자가 하나씩 나오는 스트리밍 챗봇 만들어 봤다. 개념은 알겠는데 실제 구현이 생각보다 복잡했음.
+GPT처럼 글자가 하나씩 나오는 스트리밍 챗봇 만들어 봤다. 개념은 알겠는데 실제 구현이 생각보다 복잡했다.
 
 ---
 
@@ -86,21 +86,21 @@ const sendMessage = async (userMessage: string) => {
 
 **막혔던 것들**
 
-처음에 `Transfer-Encoding: chunked` 헤더 빠뜨려서 스트리밍이 아니라 전체 응답 다 받고 한 번에 나왔음. 헤더가 핵심이었음.
+처음에 `Transfer-Encoding: chunked` 헤더 빠뜨려서 스트리밍이 아니라 전체 응답 다 받고 한 번에 나왔다. 헤더가 핵심이었다.
 
-Vercel 배포하면 기본으로 Edge Runtime이 아니라 Node.js Runtime인데, 스트리밍 제대로 하려면 설정해줘야 함:
+Vercel 배포하면 기본으로 Edge Runtime이 아니라 Node.js Runtime인데, 스트리밍 제대로 하려면 설정해줘야 한다:
 
 ```ts
 export const runtime = 'edge'
 ```
 
-Edge Runtime에서 스트리밍이 훨씬 낫다고 함.
+Edge Runtime에서 스트리밍이 훨씬 낫다고 한다.
 
 ---
 
 **AI SDK 쓰면 훨씬 편함**
 
-Vercel의 AI SDK(`ai` 패키지) 쓰면 이 보일러플레이트 다 필요 없음:
+Vercel의 AI SDK(`ai` 패키지) 쓰면 이 보일러플레이트 다 필요 없다:
 
 ```ts
 import { streamText } from 'ai'

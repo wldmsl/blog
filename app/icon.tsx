@@ -11,20 +11,10 @@ export default function Icon() {
         style={{
           width: 32,
           height: 32,
-          borderRadius: 6,
+          borderRadius: "50%",
           background: "#16a34a",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "white",
-          fontSize: 13,
-          fontWeight: 700,
-          letterSpacing: "-0.5px",
-          fontFamily: "sans-serif",
         }}
-      >
-        ojen
-      </div>
+      />
     ),
     { width: 32, height: 32 }
   );

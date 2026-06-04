@@ -3,7 +3,7 @@ export const metadata = {
   description: 'useEffect를 너무 남발했던 코드를 리팩토링하면서 배운 것들.',
 }
 
-예전에 짠 코드 보다가 소름 돋았다. `useEffect`가 한 컴포넌트에 8개였음.
+예전에 짠 코드 보다가 소름 돋았다. `useEffect`가 한 컴포넌트에 8개였다.
 
 ```tsx
 // 이게 진짜 있었던 코드... 부끄럽다
@@ -17,7 +17,7 @@ useEffect(() => { if (error) toast.error(error) }, [error])
 useEffect(() => { window.scrollTo(0, 0) }, [pathname])
 ```
 
-뭔가 잘못됐다는 건 알았는데 어디서부터 손대야 할지 몰라서 방치했었음.
+뭔가 잘못됐다는 건 알았는데 어디서부터 손대야 할지 몰라서 방치했었다.
 
 ---
 
@@ -68,12 +68,12 @@ useEffect(() => { if (error) toast(error) }, [error])
 
 ---
 
-사실 fetch도 useEffect 안에 넣는 게 맞는지 의문임. 요즘엔 React Query나 SWR 써서 데이터 페칭 로직을 분리하는 게 훨씬 낫다.
+사실 fetch도 useEffect 안에 넣는 게 맞는지 의문이다. 요즘엔 React Query나 SWR 써서 데이터 페칭 로직을 분리하는 게 훨씬 낫다.
 
 useEffect로 fetch 하면:
-- 클린업 안 하면 경쟁 조건 생김
-- 로딩/에러 상태 직접 관리해야 함
-- 캐싱 없음
-- strict mode에서 두 번 실행됨 (개발 모드)
+- 클린업 안 하면 경쟁 조건 생긴다
+- 로딩/에러 상태 직접 관리해야 한다
+- 캐싱 없다
+- strict mode에서 두 번 실행된다 (개발 모드)
 
-TanStack Query 쓰면 다 해결되는 문제들임. 이걸 왜 이제야 배웠나.
+TanStack Query 쓰면 다 해결되는 문제들이다. 이걸 왜 이제야 배웠나.

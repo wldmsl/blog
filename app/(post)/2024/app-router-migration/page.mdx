@@ -3,7 +3,7 @@ export const metadata = {
   description: 'Pages Router에서 App Router로 넘어가면서 겪은 것들.',
 }
 
-팀 프로젝트를 Pages Router에서 App Router로 올렸다. 생각보다 훨씬 많이 바뀌어서 시간이 오래 걸렸음.
+팀 프로젝트를 Pages Router에서 App Router로 올렸다. 생각보다 훨씬 많이 바뀌어서 시간이 오래 걸렸다.
 
 ---
 
@@ -31,13 +31,13 @@ export default async function Page() {
 }
 ```
 
-이건 오히려 깔끔해서 좋았음.
+이건 오히려 깔끔해서 좋았다.
 
 ---
 
 **`useRouter` 동작이 달라짐**
 
-Pages Router의 `useRouter`에서 제공하던 `pathname`, `query` 같은 게 App Router에선 분리됨.
+Pages Router의 `useRouter`에서 제공하던 `pathname`, `query` 같은 게 App Router에선 분리됐다.
 
 ```tsx
 // Pages Router
@@ -50,7 +50,7 @@ import { usePathname } from 'next/navigation'  // pathname
 import { useSearchParams } from 'next/navigation'  // query
 ```
 
-처음엔 `useRouter`에서 `pathname` 꺼내려다가 undefined 나와서 당황했음.
+처음엔 `useRouter`에서 `pathname` 꺼내려다가 undefined 나와서 당황했다.
 
 ---
 
@@ -65,7 +65,7 @@ Error: useState can only be used in a Client Component.
 Add the "use client" directive at the top of the file.
 ```
 
-이제는 보자마자 아 `'use client'` 빠졌구나 함.
+이제는 보자마자 아 `'use client'` 빠졌구나 싶다.
 
 ---
 
@@ -73,10 +73,10 @@ Add the "use client" directive at the top of the file.
 
 `_app.tsx`에 전역 레이아웃 넣던 게 이제 `app/layout.tsx`로 바뀌고, 폴더마다 `layout.tsx` 추가 가능.
 
-이건 진짜 편해졌음. 특정 섹션에만 다른 레이아웃 적용하기가 훨씬 쉬워짐.
+이건 진짜 편해졌다. 특정 섹션에만 다른 레이아웃 적용하기가 훨씬 쉬워졌다.
 
 ---
 
-마이그레이션 자체는 2주 걸렸는데, 코드 변경보다 멘탈 모델 바꾸는 게 더 오래 걸렸다. 서버/클라이언트 컴포넌트 경계를 어디에 둘지 계속 고민됨.
+마이그레이션 자체는 2주 걸렸는데, 코드 변경보다 멘탈 모델 바꾸는 게 더 오래 걸렸다. 서버/클라이언트 컴포넌트 경계를 어디에 둘지 계속 고민된다.
 
-지금도 완전히 최적화됐다고 보기 어렵고 배울 게 많은 것 같음.
+지금도 완전히 최적화됐다고 보기 어렵고 배울 게 많은 것 같다.

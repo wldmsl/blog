@@ -5,7 +5,7 @@ export const metadata = {
 
 로딩 상태를 컴포넌트마다 `if (isLoading) return <Spinner />`로 처리하고 있었는데, Suspense로 바꿔봤다.
 
-개념은 간단한데 실제로 쓰려면 데이터 페칭 라이브러리가 Suspense를 지원해야 한다는 게 핵심이었음.
+개념은 간단한데 실제로 쓰려면 데이터 페칭 라이브러리가 Suspense를 지원해야 한다는 게 핵심이었다.
 
 ---
 
@@ -26,11 +26,11 @@ export default function Page() {
 }
 ```
 
-`SlowComponent`가 데이터 로딩 중이면 `fallback`이 보이고, 완료되면 컴포넌트가 나타남.
+`SlowComponent`가 데이터 로딩 중이면 `fallback`이 보이고, 완료되면 컴포넌트가 나타난다.
 
 ---
 
-**근데 아무 컴포넌트나 된다는 게 아니었음**
+**근데 아무 컴포넌트나 된다는 게 아니었다**
 
 ```tsx
 // 이렇게 하면 Suspense 안 걸림
@@ -46,7 +46,7 @@ function SlowComponent() {
 }
 ```
 
-Suspense가 동작하려면 컴포넌트가 "Promise를 throw"해야 함. `useEffect`로 데이터 페칭하면 Suspense랑 연결이 안 됨.
+Suspense가 동작하려면 컴포넌트가 "Promise를 throw"해야 한다. `useEffect`로 데이터 페칭하면 Suspense랑 연결이 안 된다.
 
 ---
 
@@ -60,12 +60,12 @@ function SlowComponent() {
     queryFn: () => fetch('/api/data').then(r => r.json()),
   })
   
-  // data는 항상 있음 (로딩 중엔 Suspense가 처리)
+  // data는 항상 있다 (로딩 중엔 Suspense가 처리)
   return <div>{data.title}</div>
 }
 ```
 
-`useSuspenseQuery`를 쓰면 로딩 중에 자동으로 throw해서 Suspense가 캐치함.
+`useSuspenseQuery`를 쓰면 로딩 중에 자동으로 throw해서 Suspense가 캐치한다.
 
 ---
 
@@ -97,7 +97,7 @@ export default async function PostList() {
 }
 ```
 
-서버 컴포넌트에서 async/await 쓰면 Suspense가 자동으로 동작함. 이게 제일 깔끔함.
+서버 컴포넌트에서 async/await 쓰면 Suspense가 자동으로 동작한다. 이게 제일 깔끔하다.
 
 ---
 
@@ -115,6 +115,6 @@ export default async function PostList() {
 </Suspense>
 ```
 
-각 영역이 독립적으로 로딩되어서 Header 먼저 보이고, Content, Sidebar 각자 로딩 완료되는 순서대로 나타남.
+각 영역이 독립적으로 로딩되어서 Header 먼저 보이고, Content, Sidebar 각자 로딩 완료되는 순서대로 나타난다.
 
 이게 UX 면에서 훨씬 낫다. 전체 페이지가 다 로딩될 때까지 기다리는 것보다.

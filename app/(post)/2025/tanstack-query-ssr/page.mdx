@@ -50,7 +50,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-여기까진 했는데 서버에서 prefetch를 어떻게 하나가 문제였음.
+여기까진 했는데 서버에서 prefetch를 어떻게 하나가 문제였다.
 
 ---
 
@@ -96,7 +96,7 @@ export default function Posts() {
 
 **막혔던 것**
 
-`queryClient`를 서버 컴포넌트 바깥에서 만들면 요청 간 캐시가 공유되는 문제 있음. 반드시 요청마다 새 인스턴스 만들어야 함.
+`queryClient`를 서버 컴포넌트 바깥에서 만들면 요청 간 캐시가 공유되는 문제가 있다. 반드시 요청마다 새 인스턴스 만들어야 한다.
 
 ```ts
 // 이렇게 하면 안 됨 - 모든 요청이 같은 캐시 공유
@@ -111,8 +111,8 @@ export default async function Page() {
 
 ---
 
-`staleTime` 설정도 중요함. 클라이언트의 `QueryProvider`에서 `staleTime`을 0으로 두면 서버에서 prefetch해도 클라이언트에서 마운트되자마자 refetch 해버림. prefetch한 데이터를 재사용하려면 적절한 `staleTime` 설정 필요.
+`staleTime` 설정도 중요하다. 클라이언트의 `QueryProvider`에서 `staleTime`을 0으로 두면 서버에서 prefetch해도 클라이언트에서 마운트되자마자 refetch 해버린다. prefetch한 데이터를 재사용하려면 적절한 `staleTime` 설정이 필요하다.
 
-v5에서 `initialData` 방식 대신 `HydrationBoundary` 방식을 권장하는데, 이게 더 깔끔하고 캐싱도 잘 됨.
+v5에서 `initialData` 방식 대신 `HydrationBoundary` 방식을 권장하는데, 이게 더 깔끔하고 캐싱도 잘 된다.
 
-공식 문서가 잘 나와 있긴 한데 읽기 귀찮아서 삽질함. 문서 먼저 읽을걸.
+공식 문서가 잘 나와 있긴 한데 읽기 귀찮아서 삽질했다. 문서 먼저 읽을걸.

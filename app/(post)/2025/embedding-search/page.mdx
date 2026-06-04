@@ -3,7 +3,7 @@ export const metadata = {
   description: '키워드 검색 말고 의미 기반 검색을 만들어봤다.',
 }
 
-"리액트 훅 에러"를 검색했을 때 "React hook 오류", "use state 문제" 같은 것도 같이 나오게 하고 싶었다. 키워드 검색은 정확한 단어가 있어야 하니까 한계가 있음.
+"리액트 훅 에러"를 검색했을 때 "React hook 오류", "use state 문제" 같은 것도 같이 나오게 하고 싶었다. 키워드 검색은 정확한 단어가 있어야 하니까 한계가 있다.
 
 임베딩으로 의미 기반 검색 만들어봤다.
 
@@ -75,14 +75,14 @@ async function search(query: string, topK = 3) {
 
 // 테스트
 const results = await search('hook 에러')
-// → ['React useState 사용법과 주의사항', ...] 같은 식으로 나옴
+// → ['React useState 사용법과 주의사항', ...] 같은 식으로 나온다
 ```
 
 ---
 
 **실제 사용하면서 발견한 것들**
 
-문서가 너무 길면 임베딩 품질이 떨어짐. 긴 문서는 청크(chunk)로 나눠서 각 청크를 임베딩하는 게 나음.
+문서가 너무 길면 임베딩 품질이 떨어진다. 긴 문서는 청크(chunk)로 나눠서 각 청크를 임베딩하는 게 낫다.
 
 ```ts
 function chunkText(text: string, size = 500, overlap = 50): string[] {
@@ -100,9 +100,9 @@ function chunkText(text: string, size = 500, overlap = 50): string[] {
 
 ---
 
-문서 개수가 적으면 직접 코사인 유사도 계산해도 되는데, 수천 개 넘어가면 벡터 DB 써야 함. 매번 전체 다 계산하면 느려짐.
+문서 개수가 적으면 직접 코사인 유사도 계산해도 되는데, 수천 개 넘어가면 벡터 DB를 써야 한다. 매번 전체 다 계산하면 느려진다.
 
-pgvector 쓰면 PostgreSQL에서 바로 벡터 검색 가능:
+pgvector 쓰면 PostgreSQL에서 바로 벡터 검색 가능하다:
 
 ```sql
 SELECT content, 1 - (embedding <=> $1) AS similarity
@@ -111,4 +111,4 @@ ORDER BY similarity DESC
 LIMIT 5;
 ```
 
-`<=>` 연산자가 코사인 거리 계산해줌. 편함.
+`<=>` 연산자가 코사인 거리 계산해준다. 편하다.

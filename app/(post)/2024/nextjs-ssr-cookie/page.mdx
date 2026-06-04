@@ -22,11 +22,11 @@ export async function getServerSideProps(context) {
 
 ---
 
-한 30분 헤매다가 발견한 것: **쿠키가 `httpOnly`가 아닌데도 `SameSite=Strict`로 설정돼 있었음.**
+한 30분 헤매다가 발견한 것: **쿠키가 `httpOnly`가 아닌데도 `SameSite=Strict`로 설정돼 있었다.**
 
 근데 그건 사실 진짜 원인이 아니었고, 진짜 원인은 **개발환경에서 localhost와 127.0.0.1 혼용** 때문이었다.
 
-API 서버에서 쿠키 Set할 때 도메인을 `127.0.0.1`로 설정했는데, Next.js 앱은 `localhost`로 접속하고 있었음. 서로 다른 도메인 취급이라 쿠키가 안 붙은 거.
+API 서버에서 쿠키 Set할 때 도메인을 `127.0.0.1`로 설정했는데, Next.js 앱은 `localhost`로 접속하고 있었다. 서로 다른 도메인 취급이라 쿠키가 안 붙은 거다.
 
 ---
 
@@ -40,7 +40,7 @@ http://localhost:3000  (Next.js)
 http://localhost:8080  (API)
 ```
 
-이렇게 하면 쿠키가 `localhost` 도메인에 붙어서 둘 다 읽힘.
+이렇게 하면 쿠키가 `localhost` 도메인에 붙어서 둘 다 읽힌다.
 
 ---
 
@@ -55,7 +55,7 @@ export default async function Page() {
 }
 ```
 
-이거도 처음엔 왜 async인지 이해 못했는데 Next.js 15부터 `cookies()`가 비동기가 됐음. 마이그레이션 가이드 안 읽어서 한참 헤맴.
+이거도 처음엔 왜 async인지 이해 못했는데 Next.js 15부터 `cookies()`가 비동기가 됐다. 마이그레이션 가이드 안 읽어서 한참 헤맸다.
 
 앞으로 쿠키 관련 디버깅할 때는:
 1. 도메인/경로 확인

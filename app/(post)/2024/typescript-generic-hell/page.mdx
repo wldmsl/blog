@@ -3,7 +3,7 @@ export const metadata = {
   description: '제네릭 에러 메시지가 너무 길어서 뭔 소린지 몰랐는데 읽는 법을 배웠다.',
 }
 
-TypeScript 쓰면서 제일 싫은 게 이런 에러임.
+TypeScript 쓰면서 제일 싫은 게 이런 에러다.
 
 ```
 Type '(data: { id: string; items: { name: string; price: number; }[]; total: number; }) => JSX.Element' 
@@ -14,20 +14,20 @@ Type 'DataType<CartItem, "items">' is not assignable to type
 '{ id: string; items: { name: string; price: number; }[]; total: number; }'.
 ```
 
-이게 15줄짜리 에러가 될 때도 있음. 이걸 읽는 법을 한참 만에 터득했음.
+이게 15줄짜리 에러가 될 때도 있다. 이걸 읽는 법을 한참 만에 터득했다.
 
 ---
 
 **에러 읽는 법**
 
-보통 맨 마지막 줄이 가장 구체적인 원인임. 위에서 아래로 읽으면 "어디서 에러났는지", 아래에서 위로 읽으면 "왜 에러났는지"를 알 수 있음.
+보통 맨 마지막 줄이 가장 구체적인 원인이다. 위에서 아래로 읽으면 "어디서 에러났는지", 아래에서 위로 읽으면 "왜 에러났는지"를 알 수 있다.
 
 ```
 // 이 에러에서
 Type 'string' is not assignable to type 'number'.
 ```
 
-이게 나오면 어딘가에서 `string`을 `number`로 써야 하는 자리에 넣은 거임. 그 위에 있는 에러들은 어떤 타입 체인을 통해서 여기까지 왔는지를 보여줌.
+이게 나오면 어딘가에서 `string`을 `number`로 써야 하는 자리에 넣은 거다. 그 위에 있는 에러들은 어떤 타입 체인을 통해서 여기까지 왔는지를 보여준다.
 
 ---
 
@@ -64,7 +64,7 @@ const result = identity(null)  // T는 null로 추론됨
 
 **실제 삽질 케이스**
 
-API 응답 타입을 제네릭으로 만들었는데 계속 에러남.
+API 응답 타입을 제네릭으로 만들었는데 계속 에러 난다.
 
 ```ts
 type ApiResponse<T> = {
@@ -79,7 +79,7 @@ async function fetchUser(): Promise<ApiResponse<User>> {
 }
 ```
 
-`res.json()`은 `Promise<any>`를 반환해서 TypeScript가 타입 체크를 못 함.
+`res.json()`은 `Promise<any>`를 반환해서 TypeScript가 타입 체크를 못 한다.
 
 ```ts
 async function fetchUser(): Promise<ApiResponse<User>> {
@@ -100,4 +100,4 @@ const data = schema.parse(await res.json())
 
 ---
 
-제네릭 에러가 복잡하게 느껴지는 건 타입들이 여러 단계를 거쳐서 전달되기 때문임. `ts-error-translator` 같은 VSCode 확장 쓰면 에러를 사람이 읽을 수 있는 말로 바꿔줌. 이거 진작 설치할걸.
+제네릭 에러가 복잡하게 느껴지는 건 타입들이 여러 단계를 거쳐서 전달되기 때문이다. `ts-error-translator` 같은 VSCode 확장 쓰면 에러를 사람이 읽을 수 있는 말로 바꿔준다. 이거 진작 설치할걸.

@@ -6,7 +6,7 @@ export const metadata = {
 로그인 안 된 사용자가 특정 페이지 접근하면 `/login`으로 리다이렉트 하는 걸 구현했는데, 처음엔 각 페이지에서 직접 처리했다.
 
 ```tsx
-// 이런 게 10개 페이지에 있었음
+// 이런 게 10개 페이지에 있었다
 export default async function DashboardPage() {
   const session = await getSession()
   
@@ -58,9 +58,9 @@ export const config = {
 
 **헤맨 것들**
 
-**JWT 검증을 middleware에서 하려고 했는데 문제가 생겼음.**
+**JWT 검증을 middleware에서 하려고 했는데 문제가 생겼다.**
 
-middleware는 Edge Runtime에서 실행되는데, Node.js 전용 라이브러리인 `jsonwebtoken` 같은 걸 쓸 수 없었음.
+middleware는 Edge Runtime에서 실행되는데, Node.js 전용 라이브러리인 `jsonwebtoken` 같은 걸 쓸 수 없었다.
 
 ```
 Error: The edge runtime does not support Node.js 'crypto' module.
@@ -70,7 +70,7 @@ Error: The edge runtime does not support Node.js 'crypto' module.
 1. `jose` 라이브러리 사용 (Edge Runtime 지원)
 2. JWT 검증은 API Route에서 하고 middleware는 쿠키 존재 여부만 체크
 
-2번이 간단하지만 완벽한 보안은 아님 (쿠키 있어도 만료됐을 수 있으니까). 중요한 작업은 서버 컴포넌트나 API Route에서 다시 검증하는 게 맞음.
+2번이 간단하지만 완벽한 보안은 아니다 (쿠키 있어도 만료됐을 수 있으니까). 중요한 작업은 서버 컴포넌트나 API Route에서 다시 검증하는 게 맞다.
 
 ---
 
@@ -87,8 +87,8 @@ export const config = {
 }
 ```
 
-이게 다임. middleware가 알아서 세션 체크하고 리다이렉트 해줌.
+이게 다다. middleware가 알아서 세션 체크하고 리다이렉트 해준다.
 
 ---
 
-middleware 파일은 `app/` 이 아니라 프로젝트 루트 바로 아래에 있어야 한다는 거 처음에 몰라서 왜 안 먹히나 했음. `app/middleware.ts` 아니고 `middleware.ts`.
+middleware 파일은 `app/` 이 아니라 프로젝트 루트 바로 아래에 있어야 한다는 거 처음에 몰라서 왜 안 먹히나 했다. `app/middleware.ts` 아니고 `middleware.ts`.

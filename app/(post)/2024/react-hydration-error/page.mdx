@@ -13,12 +13,12 @@ Error: Hydration failed because the initial UI does not match what was rendered 
 
 ---
 
-처음엔 진짜 뭔지 몰라서 그냥 `suppressHydrationWarning` 때려박았다. 근데 그건 진짜 임시방편이고 원인을 못 찾으면 나중에 더 이상해진다는 걸 알고 있으면서도 일단 에러나 없애자 싶었음.
+처음엔 진짜 뭔지 몰라서 그냥 `suppressHydrationWarning` 때려박았다. 근데 그건 진짜 임시방편이고 원인을 못 찾으면 나중에 더 이상해진다는 걸 알면서도 일단 에러나 없애자 싶었다.
 
 콘솔 보니까 문제가 되는 부분은 날짜를 렌더링하는 컴포넌트였다.
 
 ```tsx
-// 이게 문제였음
+// 이게 문제였다
 export function PostDate({ date }: { date: string }) {
   return <span>{new Date(date).toLocaleDateString()}</span>
 }
@@ -46,15 +46,15 @@ export function PostDate({ date }: { date: string }) {
 }
 ```
 
-locale 명시해주니까 서버/클라이언트 동일하게 렌더링됨.
+locale 명시해주니까 서버/클라이언트 동일하게 렌더링된다.
 
-아니면 `useEffect` 안에서만 날짜 포맷팅하는 방법도 있는데, 그러면 초기 렌더링 때 날짜가 잠깐 비어있어서 별로임.
+아니면 `useEffect` 안에서만 날짜 포맷팅하는 방법도 있는데, 그러면 초기 렌더링 때 날짜가 잠깐 비어있어서 별로다.
 
 ---
 
-근데 더 근본적인 문제가 있었음. `Date`나 `Math.random()`, `window` 같은 거 SSR에서 그냥 쓰면 무조건 hydration mismatch 뜬다.
+근데 더 근본적인 문제가 있었다. `Date`나 `Math.random()`, `window` 같은 거 SSR에서 그냥 쓰면 무조건 hydration mismatch 뜬다.
 
-서버에선 특정 시간에 실행되고 클라이언트에선 또 다른 시간에 실행되니까. 당연한 건데 매번 까먹음.
+서버에선 특정 시간에 실행되고 클라이언트에선 또 다른 시간에 실행되니까. 당연한 건데 매번 까먹는다.
 
 앞으로 기억할 것:
 - locale 의존 함수는 명시적으로 locale 지정
