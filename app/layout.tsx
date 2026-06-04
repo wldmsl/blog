@@ -25,7 +25,6 @@ export const metadata = {
     description: "오지은의 블로그",
     url: "/",
     siteName: "ojen",
-    images: ["/opengraph-image"],
   }
 };
 
