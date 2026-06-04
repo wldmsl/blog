@@ -15,10 +15,7 @@ export default function PortfolioPage() {
           Web Developer · 3yr exp · Hanyang Univ.
         </p>
         <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
-          3년간의 웹 개발 경력을 바탕으로 백엔드·프론트엔드를 아우르는 풀스택 경험을 보유하고 있습니다.
-          Python, Java, JavaScript, TypeScript 등 다양한 언어와 React, React Native, Spring 등
-          최신 프레임워크를 활용한 서비스 개발에 능숙하며, OpenAI API·n8n을 연동한 AI 기반 앱 개발 경험도 갖추고 있습니다.
-        </p>
+사람들에게 필요한 데이터를 모아서 가치 있는 정보로 만드는 일에 관심이 있습니다.</p>
       </section>
 
       {/* Work */}
