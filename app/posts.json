@@ -3,7 +3,7 @@
     {
       "id": "hand-coding",
       "date": "2026.06.01",
-      "title": "나는 어떤 문제에 공감하는가?"
+      "title": "아직은 직접하는 코딩이 좋다"
     },
     {
       "id": "what-problem",
@@ -33,22 +33,22 @@
     {
       "id": "nextjs-fetch-cache",
       "date": "2026.01.14",
-      "title": "Next.js fetch 캐시가 이상하게 동작하던 것"
+      "title": "Next.js 캐시가 이상하게 동작하던 것"
     },
     {
       "id": "llm-context-window",
       "date": "2026.01.03",
-      "title": "LLM context window 한계 맞닥뜨림"
+      "title": "LLM context 한계..."
     },
     {
       "id": "state-management-choice",
       "date": "2025.11.22",
-      "title": "상태 관리 라이브러리 뭘 써야 하나"
+      "title": "상태 관리 라이브러리 뭐쓰지"
     },
     {
       "id": "tanstack-query-ssr",
       "date": "2025.10.30",
-      "title": "TanStack Query SSR 세팅 삽질기"
+      "title": "TanStack Query SSR 세팅"
     },
     {
       "id": "embedding-search",
@@ -78,7 +78,7 @@
     {
       "id": "chatbot-streaming",
       "date": "2025.03.19",
-      "title": "챗봇 스트리밍 구현 삽질기"
+      "title": "챗봇 스트리밍 구현!"
     },
     {
       "id": "ssr-hydration-mismatch",
@@ -113,17 +113,17 @@
     {
       "id": "vite-env-undefined",
       "date": "2024.05.22",
-      "title": "Vite 환경변수 undefined 됐던 이유"
+      "title": "Vite undefined 됐던 이유"
     },
     {
       "id": "nextjs-ssr-cookie",
       "date": "2024.04.07",
-      "title": "Next.js SSR에서 쿠키 못 읽는 문제"
+      "title": "Next.js 쿠키 못 읽는 문제"
     },
     {
       "id": "react-hydration-error",
       "date": "2024.02.19",
-      "title": "React hydration 에러 삽질기"
+      "title": "React hydration 에러.."
     }
   ]
 }
