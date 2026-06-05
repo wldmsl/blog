@@ -1,18 +1,28 @@
 {
   "posts": [
     {
+      "id": "csr-ssr-streaming",
+      "date": "2026.06.02",
+      "title": " CSR vs SSR"
+    },
+    {
       "id": "hand-coding",
-      "date": "2026.06.01",
+      "date": "2026.05.30",
+      "title": "아직은 직접하는 코딩이 좋다"
+    },
+    {
+      "id": "hand-coding",
+      "date": "2026.05.21",
       "title": "아직은 직접하는 코딩이 좋다"
     },
     {
       "id": "what-problem",
-      "date": "2026.05.29",
+      "date": "2026.05.12",
       "title": "나는 어떤 문제에 공감하는가?"
     },
     {
       "id": "tool-calling",
-      "date": "2026.05.21",
+      "date": "2026.05.02",
       "title": "LLM Tool Calling 처음 써봤다"
     },
     {

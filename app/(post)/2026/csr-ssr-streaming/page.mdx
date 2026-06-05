@@ -1,0 +1,31 @@
+import { Table } from "./table";
+import { Chart } from "./chart";
+
+export const metadata = {
+  title: "CSR vs SSR",
+  description: "브라우저랑 서버가 어떻게 주고받는지",
+};
+
+**CSR** (Client Side Rendering)
+
+브라우저가 서버한테 요청하면 서버는 텅 빈 HTML이랑 JS 파일 주소만 던져줌. 브라우저가 JS 받아서 실행하고 그 다음에 API 또 쏘고 데이터 오면 그때 화면 그림.
+
+서버는 거의 안 하고, 브라우저가 다 함. 그래서 첫 화면 뜨는 게 느림.
+
+---
+
+**SSR** (Server Side Rendering)
+
+서버가 HTML을 완성해서 줌. 브라우저는 받자마자 화면 그릴 수 있음. 그 다음에 JS 로드되면 React가 붙어서(hydrate) 인터랙션 됨.
+
+첫 화면은 빠른데 서버가 HTML 다 만들 때까지 기다려야 해서 느린 API 있으면 그냥 다 같이 느려짐.
+
+---
+
+**SSR + Streaming**
+
+SSR이랑 비슷한데, 기다리지 않음. 서버가 준비된 것부터 바로바로 흘려보냄.
+
+헤더, 레이아웃 같은 건 즉시. Suspense로 감싼 부분은 데이터 올 때까지 스켈레톤 보여주다가 데이터 오면 그 부분만 추가로 스트리밍.
+
+브라우저 입장에선 HTML이 뚝뚝 끊기지 않고 위에서 아래로 계속 흘러내려오는 느낌.
