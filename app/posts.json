@@ -2,13 +2,8 @@
   "posts": [
     {
       "id": "csr-ssr-streaming",
-      "date": "2026.06.02",
-      "title": " CSR vs SSR"
-    },
-    {
-      "id": "hand-coding",
       "date": "2026.05.30",
-      "title": "아직은 직접하는 코딩이 좋다"
+      "title": " CSR vs SSR"
     },
     {
       "id": "hand-coding",
