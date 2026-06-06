@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: 'Vite 환경변수 undefined 됐던 이유',
   description: 'VITE_ 접두사 안 붙이면 클라이언트에서 못 읽는다는 걸 몰랐다.',
 }
@@ -15,7 +15,6 @@ console.log(import.meta.env.API_URL)  // undefined???
 
 CRA 쓸 때는 `REACT_APP_` 붙이면 됐는데 Vite는 다른가?
 
----
 
 아 맞다 Vite는 **`VITE_`** 접두사를 써야 클라이언트에 노출된다.
 
@@ -31,7 +30,6 @@ console.log(import.meta.env.VITE_API_URL)  // 이제 잘 나옴
 
 근데 실수로 DB 비밀번호 같은 거 `VITE_DB_PASSWORD`로 하면 클라이언트 번들에 평문으로 들어가니까 조심해야 한다. 예전에 팀원 코드 PR 보다가 이런 거 발견한 적 있다.
 
----
 
 TypeScript 쓰면 타입도 선언해줘야 한다:
 
@@ -51,7 +49,6 @@ interface ImportMeta {
 
 이거 안 하면 `import.meta.env.VITE_API_URL`에서 타입 에러 난다.
 
----
 
 `.env` 파일 종류도 헷갈렸다:
 

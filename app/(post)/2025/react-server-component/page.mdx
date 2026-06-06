@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: 'React Server Component 이해하기',
   description: '개념은 알겠는데 실제로 어떻게 쓰는 건지 감이 안 왔다.',
 }
@@ -10,7 +10,6 @@ React Server Component(RSC)를 쓰고 있다고 생각했는데 사실 제대로
 
 이 차이가 의외로 크다.
 
----
 
 **클라이언트 번들에 안 들어간다는 게 왜 중요하냐면**
 
@@ -31,7 +30,6 @@ export default async function BlogPost({ slug }: { slug: string }) {
 
 이러면 `marked`, `prismjs` 클라이언트로 안 간다. 번들 사이즈 크게 줄어든다.
 
----
 
 **서버 컴포넌트에서 못 쓰는 것들**
 
@@ -42,7 +40,6 @@ export default async function BlogPost({ slug }: { slug: string }) {
 
 이게 필요하면 `'use client'` 붙인 클라이언트 컴포넌트로 분리해야 한다.
 
----
 
 **처음에 헷갈렸던 것: 서버 컴포넌트가 클라이언트 컴포넌트를 import 할 수 있나?**
 
@@ -64,7 +61,6 @@ export default async function BlogPost() {
 
 가능하다. 반대로 클라이언트 컴포넌트에서 서버 컴포넌트 import는 안 된다 (children으로 전달하는 건 된다).
 
----
 
 **데이터 패칭이 깔끔해진다**
 

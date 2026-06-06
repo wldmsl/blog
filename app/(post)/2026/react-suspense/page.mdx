@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: 'React Suspense 로딩 UI 구현',
   description: 'Suspense가 어떻게 동작하는지 이해하는 데 시간이 걸렸다.',
 }
@@ -7,7 +7,6 @@ export const metadata = {
 
 개념은 간단한데 실제로 쓰려면 데이터 페칭 라이브러리가 Suspense를 지원해야 한다는 게 핵심이었다.
 
----
 
 **기본 사용법**
 
@@ -28,7 +27,6 @@ export default function Page() {
 
 `SlowComponent`가 데이터 로딩 중이면 `fallback`이 보이고, 완료되면 컴포넌트가 나타난다.
 
----
 
 **근데 아무 컴포넌트나 된다는 게 아니었다**
 
@@ -48,7 +46,6 @@ function SlowComponent() {
 
 Suspense가 동작하려면 컴포넌트가 "Promise를 throw"해야 한다. `useEffect`로 데이터 페칭하면 Suspense랑 연결이 안 된다.
 
----
 
 **TanStack Query로 Suspense 쓰기**
 
@@ -67,7 +64,6 @@ function SlowComponent() {
 
 `useSuspenseQuery`를 쓰면 로딩 중에 자동으로 throw해서 Suspense가 캐치한다.
 
----
 
 **Next.js App Router에서 서버 컴포넌트 + Suspense**
 
@@ -99,7 +95,6 @@ export default async function PostList() {
 
 서버 컴포넌트에서 async/await 쓰면 Suspense가 자동으로 동작한다. 이게 제일 깔끔하다.
 
----
 
 **여러 Suspense 중첩**
 

@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: 'AI API rate limit 대응하기',
   description: '사용자가 늘어나니까 rate limit 에러가 터지기 시작했다.',
 }
@@ -13,7 +13,6 @@ Please try again in 120ms.
 
 분당 요청 수 초과. 어떻게 대응해야 하나 고민했다.
 
----
 
 **일단 현재 상황 파악**
 
@@ -27,7 +26,6 @@ OpenAI API 사용량 대시보드 보니까 tier에 따라 한도가 다르다.
 
 Free 플랜이라 RPM(분당 요청 수)이 3이었다. 사용자 3명만 동시에 요청해도 터지는 거였다.
 
----
 
 **단기 대응: 지수 백오프 재시도**
 
@@ -57,7 +55,6 @@ const response = await callWithRetry(() =>
 )
 ```
 
----
 
 **중기 대응: 요청 큐**
 
@@ -108,7 +105,6 @@ const result = await queue.add(() =>
 )
 ```
 
----
 
 **근본적 대응: 캐싱**
 
@@ -132,6 +128,5 @@ async function cachedAsk(prompt: string): Promise<string> {
 
 프로덕션에선 Redis 같은 걸로 캐시하면 서버 재시작해도 유지된다.
 
----
 
 가장 빠른 해결책은 결국 플랜 업그레이드인데, 그 전에 캐싱이랑 큐로 버틸 수 있다. 그리고 GPT-4o mini 같은 저렴한 모델로 전환하면 같은 비용에 처리량이 훨씬 늘어난다. 모든 요청에 최고 모델이 필요한 건 아니니까.

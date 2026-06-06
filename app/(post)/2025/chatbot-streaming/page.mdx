@@ -1,11 +1,10 @@
-export const metadata = {
+﻿export const metadata = {
   title: '챗봇 스트리밍 구현 삽질기',
   description: 'AI 응답을 실시간으로 보여주는 스트리밍 구현하면서 헤맸던 것들.',
 }
 
 GPT처럼 글자가 하나씩 나오는 스트리밍 챗봇 만들어 봤다. 개념은 알겠는데 실제 구현이 생각보다 복잡했다.
 
----
 
 **서버 (Route Handler)**
 
@@ -47,7 +46,6 @@ export async function POST(req: Request) {
 }
 ```
 
----
 
 **클라이언트**
 
@@ -82,7 +80,6 @@ const sendMessage = async (userMessage: string) => {
 }
 ```
 
----
 
 **막혔던 것들**
 
@@ -96,7 +93,6 @@ export const runtime = 'edge'
 
 Edge Runtime에서 스트리밍이 훨씬 낫다고 한다.
 
----
 
 **AI SDK 쓰면 훨씬 편함**
 

@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: 'TanStack Query SSR 세팅 삽질기',
   description: 'Next.js App Router에서 TanStack Query prefetch 세팅이 생각보다 까다로웠다.',
 }
@@ -7,7 +7,6 @@ TanStack Query (React Query v5)를 Next.js App Router에서 쓰려는데 SSR 세
 
 원하는 것: 서버에서 데이터 미리 받아오고, 클라이언트에서 hydration 후 캐시 활용
 
----
 
 **기본 세팅**
 
@@ -52,7 +51,6 @@ export default function RootLayout({ children }) {
 
 여기까진 했는데 서버에서 prefetch를 어떻게 하나가 문제였다.
 
----
 
 **Prefetch 패턴 (HydrationBoundary)**
 
@@ -92,7 +90,6 @@ export default function Posts() {
 }
 ```
 
----
 
 **막혔던 것**
 
@@ -109,7 +106,6 @@ export default async function Page() {
 }
 ```
 
----
 
 `staleTime` 설정도 중요하다. 클라이언트의 `QueryProvider`에서 `staleTime`을 0으로 두면 서버에서 prefetch해도 클라이언트에서 마운트되자마자 refetch 해버린다. prefetch한 데이터를 재사용하려면 적절한 `staleTime` 설정이 필요하다.
 

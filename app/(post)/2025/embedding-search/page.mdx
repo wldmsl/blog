@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: '임베딩으로 유사도 검색 구현',
   description: '키워드 검색 말고 의미 기반 검색을 만들어봤다.',
 }
@@ -7,7 +7,6 @@ export const metadata = {
 
 임베딩으로 의미 기반 검색 만들어봤다.
 
----
 
 **기본 흐름**
 
@@ -16,7 +15,6 @@ export const metadata = {
 3. 저장된 벡터들과 코사인 유사도 계산
 4. 유사도 높은 것 반환
 
----
 
 **문서 임베딩 & 저장 (미리 해두는 것)**
 
@@ -48,7 +46,6 @@ const embeddings = await Promise.all(
 )
 ```
 
----
 
 **코사인 유사도 계산**
 
@@ -78,7 +75,6 @@ const results = await search('hook 에러')
 // → ['React useState 사용법과 주의사항', ...] 같은 식으로 나온다
 ```
 
----
 
 **실제 사용하면서 발견한 것들**
 
@@ -98,7 +94,6 @@ function chunkText(text: string, size = 500, overlap = 50): string[] {
 }
 ```
 
----
 
 문서 개수가 적으면 직접 코사인 유사도 계산해도 되는데, 수천 개 넘어가면 벡터 DB를 써야 한다. 매번 전체 다 계산하면 느려진다.
 

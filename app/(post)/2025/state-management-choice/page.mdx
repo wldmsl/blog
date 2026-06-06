@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: '상태 관리 라이브러리 뭘 써야 하나',
   description: 'Redux, Zustand, Jotai, Recoil... 너무 많아서 정리해봤다.',
 }
@@ -9,7 +9,6 @@ export const metadata = {
 
 이걸 정리해봤다.
 
----
 
 **일단 상태를 종류별로 나누는 게 먼저**
 
@@ -28,7 +27,6 @@ export const metadata = {
 
 대부분의 "상태 관리" 문제는 TanStack Query 도입하면 해결된다. API 데이터를 useState로 관리하다가 전역으로 공유하려다 보니까 전역 상태 관리 라이브러리까지 끌어오는 패턴이 많다.
 
----
 
 **진짜 전역 상태가 필요한 경우에는**
 
@@ -44,7 +42,6 @@ export const metadata = {
 **Redux Toolkit**: 대규모 팀, 디버깅 도구 중요, 미들웨어 필요할 때  
 → 혼자 or 소규모 팀이면 오버킬
 
----
 
 **Zustand 기본 패턴**
 
@@ -79,7 +76,6 @@ const useAuthStore = create<AuthStore>((set) => ({
 }))
 ```
 
----
 
 **리렌더링 최적화**
 
@@ -94,7 +90,6 @@ const isLoading = useAuthStore(state => state.isLoading)
 
 selector 쓰면 불필요한 리렌더링 줄일 수 있다.
 
----
 
 결론: 프로젝트 시작하면 일단 TanStack Query + Context API로 시작하고, 전역 상태가 복잡해지면 Zustand 추가하는 방식이 제일 무난하다.
 

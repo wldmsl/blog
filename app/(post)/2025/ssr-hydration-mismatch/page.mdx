@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: 'SSR hydration mismatch 원인 찾기',
   description: 'Math.random() 하나 때문에 hydration이 깨졌다.',
 }
@@ -21,7 +21,6 @@ function ListItem({ label }: { label: string }) {
 
 서버에서 렌더링할 때 `Math.random()` 한 번, 클라이언트에서 hydration할 때 또 `Math.random()` 한 번 → 값이 달라서 mismatch.
 
----
 
 해결법 여러 가지인데:
 
@@ -68,7 +67,6 @@ function ListItem({ label }: { label: string }) {
 
 근데 이러면 hydration 후 리렌더링이 생기니까 성능상 별로다.
 
----
 
 SSR에서 "서버와 클라이언트에서 다를 수 있는 값"은:
 - `Math.random()`

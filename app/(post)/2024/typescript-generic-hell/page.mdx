@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: 'TypeScript 제네릭 에러 해석하기',
   description: '제네릭 에러 메시지가 너무 길어서 뭔 소린지 몰랐는데 읽는 법을 배웠다.',
 }
@@ -16,7 +16,6 @@ Type 'DataType<CartItem, "items">' is not assignable to type
 
 이게 15줄짜리 에러가 될 때도 있다. 이걸 읽는 법을 한참 만에 터득했다.
 
----
 
 **에러 읽는 법**
 
@@ -29,7 +28,6 @@ Type 'string' is not assignable to type 'number'.
 
 이게 나오면 어딘가에서 `string`을 `number`로 써야 하는 자리에 넣은 거다. 그 위에 있는 에러들은 어떤 타입 체인을 통해서 여기까지 왔는지를 보여준다.
 
----
 
 **자주 마주치는 패턴들**
 
@@ -60,7 +58,6 @@ function identity<T>(value: T): T { return value }
 const result = identity(null)  // T는 null로 추론됨
 ```
 
----
 
 **실제 삽질 케이스**
 
@@ -98,6 +95,5 @@ const schema = z.object({
 const data = schema.parse(await res.json())
 ```
 
----
 
 제네릭 에러가 복잡하게 느껴지는 건 타입들이 여러 단계를 거쳐서 전달되기 때문이다. `ts-error-translator` 같은 VSCode 확장 쓰면 에러를 사람이 읽을 수 있는 말로 바꿔준다. 이거 진작 설치할걸.

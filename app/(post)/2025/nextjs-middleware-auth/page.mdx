@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: 'Next.js middleware로 인증 처리',
   description: '페이지마다 인증 체크 코드 복붙하다가 middleware로 한방에 처리했다.',
 }
@@ -20,7 +20,6 @@ export default async function DashboardPage() {
 
 페이지 늘어날수록 복붙하기 싫어서 middleware로 옮겼다.
 
----
 
 **middleware.ts**
 
@@ -54,7 +53,6 @@ export const config = {
 }
 ```
 
----
 
 **헤맨 것들**
 
@@ -72,7 +70,6 @@ Error: The edge runtime does not support Node.js 'crypto' module.
 
 2번이 간단하지만 완벽한 보안은 아니다 (쿠키 있어도 만료됐을 수 있으니까). 중요한 작업은 서버 컴포넌트나 API Route에서 다시 검증하는 게 맞다.
 
----
 
 **auth.js (NextAuth) 쓰면 편함**
 
@@ -89,6 +86,5 @@ export const config = {
 
 이게 다다. middleware가 알아서 세션 체크하고 리다이렉트 해준다.
 
----
 
 middleware 파일은 `app/` 이 아니라 프로젝트 루트 바로 아래에 있어야 한다는 거 처음에 몰라서 왜 안 먹히나 했다. `app/middleware.ts` 아니고 `middleware.ts`.

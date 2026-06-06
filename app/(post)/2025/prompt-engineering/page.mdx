@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: '프롬프트 엔지니어링 기초 정리',
   description: '그냥 질문만 넣었더니 결과가 별로여서 프롬프트를 제대로 짜기 시작했다.',
 }
@@ -15,7 +15,6 @@ const response = await client.chat.completions.create({
 
 AI가 뭘 해야 하는지 컨텍스트가 없으니 당연한 거였다.
 
----
 
 **System prompt의 역할**
 
@@ -38,7 +37,6 @@ const response = await client.chat.completions.create({
 
 system prompt로 역할, 말투, 출력 형식, 제약 조건 같은 걸 정의하면 결과물이 훨씬 일관된다.
 
----
 
 **Few-shot prompting**
 
@@ -60,7 +58,6 @@ const messages = [
 
 원하는 출력 형식 예시를 conversation history처럼 넣으면 모델이 패턴을 따라간다.
 
----
 
 **JSON 출력 강제**
 
@@ -76,7 +73,6 @@ const data = JSON.parse(response.choices[0].message.content)
 
 `response_format`으로 JSON 강제하면 파싱 실패가 거의 없다. 전엔 "JSON으로 반환해"라고 했는데도 가끔 설명 텍스트가 섞여서 `JSON.parse`에서 터졌다.
 
----
 
 **실제로 효과 있었던 것들**
 
@@ -85,7 +81,6 @@ const data = JSON.parse(response.choices[0].message.content)
 - 제약 조건 명시 ("3문장 이내로") → 불필요한 말 줄어든다
 - 부정형보다 긍정형 ("~하지 마세요" 대신 "~하세요") → 약간 더 잘 따르는 것 같다
 
----
 
 프롬프트 짜는 것도 일종의 기술이라는 게 이해됐다. 모델마다 반응하는 방식이 다르고, 같은 프롬프트도 온도(temperature) 설정에 따라 결과가 많이 달라진다.
 

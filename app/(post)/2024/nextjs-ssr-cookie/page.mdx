@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: 'Next.js SSR에서 쿠키 못 읽는 문제',
   description: 'getServerSideProps에서 쿠키를 읽으려고 했는데 계속 undefined가 나왔다.',
 }
@@ -20,7 +20,6 @@ export async function getServerSideProps(context) {
 
 분명히 브라우저에서 쿠키 확인하면 있는데 왜 SSR에서 못 읽지?
 
----
 
 한 30분 헤매다가 발견한 것: **쿠키가 `httpOnly`가 아닌데도 `SameSite=Strict`로 설정돼 있었다.**
 
@@ -28,7 +27,6 @@ export async function getServerSideProps(context) {
 
 API 서버에서 쿠키 Set할 때 도메인을 `127.0.0.1`로 설정했는데, Next.js 앱은 `localhost`로 접속하고 있었다. 서로 다른 도메인 취급이라 쿠키가 안 붙은 거다.
 
----
 
 해결:
 
@@ -42,7 +40,6 @@ http://localhost:8080  (API)
 
 이렇게 하면 쿠키가 `localhost` 도메인에 붙어서 둘 다 읽힌다.
 
----
 
 App Router로 넘어온 다음엔 `cookies()`를 쓰는데:
 

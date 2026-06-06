@@ -1,4 +1,4 @@
-export const metadata = {
+﻿export const metadata = {
   title: 'React hydration 에러 삽질기',
   description: 'SSR 환경에서 hydration 에러가 터졌는데 원인 찾는데 한참 걸렸다.',
 }
@@ -11,7 +11,6 @@ Error: Hydration failed because the initial UI does not match what was rendered 
 
 ????? 뭔 소리야 나 코드 바꾼 거 없는데.
 
----
 
 처음엔 진짜 뭔지 몰라서 그냥 `suppressHydrationWarning` 때려박았다. 근데 그건 진짜 임시방편이고 원인을 못 찾으면 나중에 더 이상해진다는 걸 알면서도 일단 에러나 없애자 싶었다.
 
@@ -28,7 +27,6 @@ export function PostDate({ date }: { date: string }) {
 
 서버는 `en-US`, 내 브라우저는 `ko-KR` 이라 결과값이 달라서 mismatch 발생.
 
----
 
 해결은 간단했다.
 
@@ -50,7 +48,6 @@ locale 명시해주니까 서버/클라이언트 동일하게 렌더링된다.
 
 아니면 `useEffect` 안에서만 날짜 포맷팅하는 방법도 있는데, 그러면 초기 렌더링 때 날짜가 잠깐 비어있어서 별로다.
 
----
 
 근데 더 근본적인 문제가 있었다. `Date`나 `Math.random()`, `window` 같은 거 SSR에서 그냥 쓰면 무조건 hydration mismatch 뜬다.
 
