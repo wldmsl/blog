@@ -1,14 +1,12 @@
-import remarkBreaks from "remark-breaks";
 import createMDX from "@next/mdx";
 
-const withMDX = createMDX({
-  options: {
-    remarkPlugins: [remarkBreaks],
-  },
-});
+const withMDX = createMDX({});
 
 export default withMDX({
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+  experimental: {
+    mdxRs: true,
+  },
   images: {
     minimumCacheTTL: 2678400,
     remotePatterns: [
