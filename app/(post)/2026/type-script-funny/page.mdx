@@ -1,70 +1,52 @@
-﻿export const metadata = {
-  title: "tanstack query를 왜 tankstack query라고 읽는걸까",
+export const metadata = {
+  title: "탠스택쿼리",
   description: "재밌다",
 };
-
-function MyComponent() {
-
-    // 유저가 조작하는 건 useState
-
-    const [isOpen, setIsOpen] = useState(false);
-
-    const [inputValue, setInputValue] = useState("");
-
-
-    // 서버에서 받아오는 건 TanStack Query
-
-    const { data: users } = useQuery({
-
-        queryKey: ["users"],
-
-        queryFn: fetchUsers,
-
-    });
-
-
-    return (
-
-        <input
-
-            value={inputValue}
-
-            onChange={e => setInputValue(e.target.value)}
-
-        />
-
-    )
-
-}
 
 서버에서 오는 데이터 → TanStack Query
 
 유저 인터랙션, UI 상태 → useState
 
-// 기존 방식
+```tsx
+function MyComponent() {
+    // 유저가 조작하는 건 useState
+    const [isOpen, setIsOpen] = useState(false);
+    const [inputValue, setInputValue] = useState("");
 
+    // 서버에서 받아오는 건 TanStack Query
+    const { data: users } = useQuery({
+        queryKey: ["users"],
+        queryFn: fetchUsers,
+    });
+
+    return (
+        <input
+            value={inputValue}
+            onChange={e => setInputValue(e.target.value)}
+        />
+    )
+}
+```
+
+기존 방식
+
+```ts
 const [data, setData] = useState(null);
-
 const [loading, setLoading] = useState(false);
-
 const [error, setError] = useState(null);
 
 useEffect(() => {
-
     setLoading(true);
-
     fetch("/api/users")
-
         .then(res => res.json())
-
         .then(setData)
-
         .catch(setError)
-
         .finally(() => setLoading(false));
-
 }, []);
+```
 
-// 적용
+TanStack Query 적용
 
+```ts
 const { data, isLoading, isError } = useQuery({ queryKey: ["users"], queryFn: fetchUsers });
+```
