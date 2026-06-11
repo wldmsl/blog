@@ -1,6 +1,11 @@
 {
   "posts": [
     {
+      "id": "type-script-funny",
+      "date": "2026.06.03",
+      "title": "탠스택쿼리"
+    },
+    {
       "id": "csr-ssr-streaming",
       "date": "2026.05.30",
       "title": "CSR vs SSR"
